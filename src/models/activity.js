@@ -21,14 +21,19 @@ const activity = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             allowNull: false,
         },
-        creator: {
-            type: DataTypes.STRING(50),  //todo: create a fk restraint with user
+        creatorId: {
+            type: DataTypes.INTEGER,  //todo: create a fk restraint with user
             allowNull: false,
         },
         givesPoints: {
             type: DataTypes.BOOLEAN,
             defaultValue: false,
             allowNull: false,
+        },
+        cancelled: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+            allowNull: false
         }
     });
 
@@ -37,13 +42,17 @@ const activity = (sequelize, DataTypes) => {
             through: {
                 model: models.Activity_Attendance
             },
-            foreignKey: 'activityId', 
+            foreignKey: 'activityId',
+            otherKey: 'userId'
         });
         Activity.belongsToMany(models.Tag, {
             through: {
                 model: models.Activity_Tag
             },
-            foreignKey: 'activityId', 
+            foreignKey: 'activityId',
+        });
+        Activity.belongsTo(models.User, {
+            foreignKey: 'creatorId'
         });
         //onDelete: 'CASCADE'
 

@@ -31,13 +31,16 @@ const user = (sequelize, DataTypes) => {
         }
     });
 
+
+    
     User.associate = models => {
         User.belongsToMany(models.Activity, {
             through: {
                 model: models.Activity_Attendance
             },
             foreignKey: 'userId',
-            constraints: false
+            otherKey: 'activityId',
+            // constraints: false
         });
         User.belongsToMany(models.Tag, {
             through: {
@@ -57,7 +60,10 @@ const user = (sequelize, DataTypes) => {
         User.hasMany(models.Home_Day, {
 
         });
-    };
+        User.hasMany(models.Activity, {
+            foreignKey: 'creatorId'         //when I defined this in both it set it to delete and update cascade. when I removed it here it only
+        });                                 //had update cascade (on delete no action). when I removed it from the activity table It no longer
+    };                                      //used creatorId as the FK and instead made a column named userId.
     return User;
 };
 
